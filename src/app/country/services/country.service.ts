@@ -3,9 +3,9 @@ import { inject, Injectable } from '@angular/core';
 
 import { RESTCountry } from '../interfaces/rest-countries.interface';
 import { map, Observable, catchError, throwError, delay, of, tap } from 'rxjs';
-import { Region } from '../interfaces/region.type';
 import { CountryMapper } from '../mappers/country.mapper';
-import { Country } from '../interfaces/country.interface';
+import type { Country } from '../interfaces/country.interface';
+import { Region } from '../interfaces/region.type';
 
 const API_URL = 'https://restcountries.com/v3.1';
 
@@ -26,7 +26,8 @@ export class CountryService {
       return of(this.queryCacheCapital.get(query) ?? []);
     }
 
-    return this.http.get<RESTCountry[]>(`${API_URL}/capital/${query}`).pipe(
+    return this.http.get<RESTCountry[]>(`${API_URL}/capital/${query}`)
+    .pipe(
       map((resp) => CountryMapper.mapRestCountryArrayToCountryArray(resp)),
       tap((countries) => this.queryCacheCapital.set(query, countries)),
       catchError((error) => {
